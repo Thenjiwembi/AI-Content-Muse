@@ -142,9 +142,14 @@ function Studio() {
             variables, watch the prompt build itself, then generate.
           </p>
         </div>
-        <Button asChild variant="secondary">
-          <Link to="/prompts">Prompt library</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild>
+            <Link to="/minutes">Meeting minutes</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to="/prompts">Prompt library</Link>
+          </Button>
+        </div>
       </header>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
