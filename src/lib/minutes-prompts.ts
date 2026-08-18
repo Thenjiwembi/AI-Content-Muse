@@ -157,10 +157,10 @@ export function fillMinutesPrompt(
     date: string;
     attendees: string;
     detail: string;
-    prev?: string;
-    topics?: string;
-    decisions?: string;
-    actions?: string;
+    prev?: string | undefined;
+    topics?: string | undefined;
+    decisions?: string | undefined;
+    actions?: string | undefined;
   },
 ) {
   return template
