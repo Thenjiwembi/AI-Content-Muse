@@ -6,10 +6,12 @@ import {
   Copy,
   Download,
   Loader2,
+  Mic,
   RotateCcw,
   Sparkles,
   Square,
   ClipboardList,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -30,10 +32,12 @@ import {
   MEETING_TYPES,
   DETAIL_LEVELS,
   SAMPLE_NOTES,
+  SPEAKER_NOTES_PROMPT,
   fillMinutesPrompt,
   parseMarkdownTable,
   type MinutesStageId,
 } from "@/lib/minutes-prompts";
+
 
 export const Route = createFileRoute("/minutes")({
   head: () => ({
