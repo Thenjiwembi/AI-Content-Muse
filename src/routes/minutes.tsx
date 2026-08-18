@@ -304,7 +304,74 @@ function MinutesPage() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
         <section className="panel space-y-6 p-6">
+          <div className="space-y-3 rounded-lg border border-border/70 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="label-eyebrow">Transcript parser</p>
+              {transcribeStep !== "idle" && (
+                <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="size-3.5 animate-spin text-primary" />
+                  {transcribeStep === "transcribing"
+                    ? "Transcribing audio…"
+                    : "Splitting by speaker…"}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Upload or record the meeting audio. It is transcribed, then split into
+              speaker-by-speaker notes that feed the workflow below.
+            </p>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="audio/*,video/mp4"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (f) void handleAudio(f);
+              }}
+            />
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                className="flex-1"
+                type="button"
+                disabled={transcribeStep !== "idle" || recording}
+                onClick={() => fileRef.current?.click()}
+              >
+                <Upload /> Upload recording
+              </Button>
+              <Button
+                variant={recording ? "destructive" : "outline"}
+                type="button"
+                disabled={transcribeStep !== "idle"}
+                onClick={() => void toggleRecording()}
+              >
+                {recording ? <Square /> : <Mic />}
+                {recording ? "Stop" : "Record"}
+              </Button>
+            </div>
+            {rawTranscript && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium text-muted-foreground">Raw transcript</p>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copy(rawTranscript, "Transcript")}
+                  >
+                    <Copy /> Copy
+                  </Button>
+                </div>
+                <p className="max-h-32 overflow-y-auto whitespace-pre-wrap rounded-md bg-muted/40 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                  {rawTranscript}
+                </p>
+              </div>
+            )}
+          </div>
+
           <div className="space-y-2">
+
             <div className="flex items-center justify-between">
               <Label htmlFor="notes">Rough notes / transcript</Label>
               <Button
