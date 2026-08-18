@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MinutesRouteImport } from './routes/minutes'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ApiGenerateRouteImport } from './routes/api/generate'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinutesRoute = MinutesRouteImport.update({
+  id: '/minutes',
+  path: '/minutes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromptsRoute = PromptsRouteImport.update({
@@ -31,30 +37,34 @@ const ApiGenerateRoute = ApiGenerateRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
   '/api/generate': typeof ApiGenerateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
   '/api/generate': typeof ApiGenerateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
   '/api/generate': typeof ApiGenerateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/prompts' | '/api/generate'
+  fullPaths: '/' | '/minutes' | '/prompts' | '/api/generate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/prompts' | '/api/generate'
-  id: '__root__' | '/' | '/prompts' | '/api/generate'
+  to: '/' | '/minutes' | '/prompts' | '/api/generate'
+  id: '__root__' | '/' | '/minutes' | '/prompts' | '/api/generate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MinutesRoute: typeof MinutesRoute
   PromptsRoute: typeof PromptsRoute
   ApiGenerateRoute: typeof ApiGenerateRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/minutes': {
+      id: '/minutes'
+      path: '/minutes'
+      fullPath: '/minutes'
+      preLoaderRoute: typeof MinutesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prompts': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MinutesRoute: MinutesRoute,
   PromptsRoute: PromptsRoute,
   ApiGenerateRoute: ApiGenerateRoute,
 }
