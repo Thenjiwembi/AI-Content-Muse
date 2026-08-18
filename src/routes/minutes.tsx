@@ -6,10 +6,12 @@ import {
   Copy,
   Download,
   Loader2,
+  Mic,
   RotateCcw,
   Sparkles,
   Square,
   ClipboardList,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -30,10 +32,12 @@ import {
   MEETING_TYPES,
   DETAIL_LEVELS,
   SAMPLE_NOTES,
+  SPEAKER_NOTES_PROMPT,
   fillMinutesPrompt,
   parseMarkdownTable,
   type MinutesStageId,
 } from "@/lib/minutes-prompts";
+
 
 export const Route = createFileRoute("/minutes")({
   head: () => ({
@@ -75,7 +79,102 @@ function MinutesPage() {
   const [busy, setBusy] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
+  // ---- transcript parser ----
+  const [rawTranscript, setRawTranscript] = useState("");
+  const [speakerNotes, setSpeakerNotes] = useState("");
+  const [transcribeStep, setTranscribeStep] = useState<"idle" | "transcribing" | "parsing">("idle");
+  const [recording, setRecording] = useState(false);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+
   const baseVars = { notes, title, type, date, attendees, detail };
+
+  async function parseSpeakers(transcript: string) {
+    setTranscribeStep("parsing");
+    setSpeakerNotes("");
+    const prompt = fillMinutesPrompt(SPEAKER_NOTES_PROMPT, {
+      ...baseVars,
+      notes: transcript,
+    });
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt,
+        system:
+          "You are a transcript parser. Segment speech by speaker turns. Never invent content that is not in the transcript. Return only clean markdown.",
+      }),
+    });
+    if (!res.ok || !res.body) {
+      const data = await res.json().catch(() => ({}) as { error?: string });
+      throw new Error(data.error ?? "Could not parse speakers.");
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      text += chunk;
+      setSpeakerNotes((s) => s + chunk);
+    }
+    return text;
+  }
+
+  async function handleAudio(file: File) {
+    setTranscribeStep("transcribing");
+    setRawTranscript("");
+    setSpeakerNotes("");
+    try {
+      const form = new FormData();
+      form.append("audio", file, file.name || "recording.webm");
+      const res = await fetch("/api/transcribe", { method: "POST", body: form });
+      const data = (await res.json().catch(() => ({}))) as { text?: string; error?: string };
+      if (!res.ok || !data.text) throw new Error(data.error ?? "Transcription failed.");
+      setRawTranscript(data.text);
+
+      const parsed = await parseSpeakers(data.text);
+      setNotes(parsed);
+      toast.success("Transcript parsed into speaker notes");
+    } catch (err) {
+      toast.error((err as Error).message || "Could not read that recording.");
+    } finally {
+      setTranscribeStep("idle");
+    }
+  }
+
+  async function toggleRecording() {
+    if (recording) {
+      recorderRef.current?.stop();
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        setRecording(false);
+        const type = recorder.mimeType.split(";")[0] || "audio/webm";
+        const blob = new Blob(chunks, { type });
+        if (blob.size < 2048) {
+          toast.error("That recording was empty — please try again.");
+          return;
+        }
+        void handleAudio(new File([blob], "recording.webm", { type }));
+      };
+      recorderRef.current = recorder;
+      recorder.start();
+      setRecording(true);
+    } catch {
+      toast.error("Microphone access is needed to record the meeting.");
+    }
+  }
+
 
   async function runStage(
     stageIndex: number,
@@ -205,7 +304,74 @@ function MinutesPage() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
         <section className="panel space-y-6 p-6">
+          <div className="space-y-3 rounded-lg border border-border/70 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <p className="label-eyebrow">Transcript parser</p>
+              {transcribeStep !== "idle" && (
+                <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="size-3.5 animate-spin text-primary" />
+                  {transcribeStep === "transcribing"
+                    ? "Transcribing audio…"
+                    : "Splitting by speaker…"}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Upload or record the meeting audio. It is transcribed, then split into
+              speaker-by-speaker notes that feed the workflow below.
+            </p>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="audio/*,video/mp4"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (f) void handleAudio(f);
+              }}
+            />
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                className="flex-1"
+                type="button"
+                disabled={transcribeStep !== "idle" || recording}
+                onClick={() => fileRef.current?.click()}
+              >
+                <Upload /> Upload recording
+              </Button>
+              <Button
+                variant={recording ? "destructive" : "outline"}
+                type="button"
+                disabled={transcribeStep !== "idle"}
+                onClick={() => void toggleRecording()}
+              >
+                {recording ? <Square /> : <Mic />}
+                {recording ? "Stop" : "Record"}
+              </Button>
+            </div>
+            {rawTranscript && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-medium text-muted-foreground">Raw transcript</p>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => copy(rawTranscript, "Transcript")}
+                  >
+                    <Copy /> Copy
+                  </Button>
+                </div>
+                <p className="max-h-32 overflow-y-auto whitespace-pre-wrap rounded-md bg-muted/40 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                  {rawTranscript}
+                </p>
+              </div>
+            )}
+          </div>
+
           <div className="space-y-2">
+
             <div className="flex items-center justify-between">
               <Label htmlFor="notes">Rough notes / transcript</Label>
               <Button
@@ -345,6 +511,27 @@ function MinutesPage() {
         </section>
 
         <section className="space-y-6">
+          {(speakerNotes || transcribeStep === "parsing") && (
+            <div className="panel p-6">
+              <div className="flex items-center justify-between gap-3">
+                <p className="label-eyebrow">Speaker-by-speaker notes</p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => copy(speakerNotes, "Speaker notes")}
+                >
+                  <Copy /> Copy
+                </Button>
+              </div>
+              <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground">
+                {speakerNotes}
+                {transcribeStep === "parsing" && (
+                  <span className="ml-1 animate-pulse text-primary">▍</span>
+                )}
+              </pre>
+            </div>
+          )}
+
           {actionsTable && (
             <div className="panel p-6">
               <div className="flex items-center justify-between gap-3">

@@ -202,7 +202,34 @@ export function parseMarkdownTable(md: string): { headers: string[]; rows: strin
   return rows.length ? { headers, rows } : null;
 }
 
+/** Turns a raw transcript into speaker-by-speaker notes. */
+export const SPEAKER_NOTES_PROMPT = `You are a transcript parser preparing speaker-by-speaker meeting notes.
+
+Meeting: {{title}}
+Attendees (may be incomplete): {{attendees}}
+
+Raw transcript (no speaker labels, produced by speech-to-text):
+"""
+{{notes}}
+"""
+
+Segment the transcript by speaker turns and output clean markdown:
+
+## Speaker notes
+For each speaker turn block, in chronological order:
+**<Speaker name or "Speaker 1", "Speaker 2", …>** — 1-3 bullets summarising what they said, in their own framing.
+- Map a speaker to a real attendee name ONLY when the transcript makes it explicit (self-introduction, someone addressing them). Otherwise keep the generic label.
+- Merge consecutive turns by the same speaker.
+- Keep numbers, dates, names and commitments verbatim.
+- Never invent content. Mark anything indistinct as "unclear from audio".
+
+## Participants detected
+A bullet list of each speaker label with a one-line description of their role in the discussion.
+
+Output only that markdown, no preamble.`;
+
 export const SAMPLE_NOTES = `weekly product sync - 18 aug
+
 present: thenjiwe, sipho, lerato, dan (joined late)
 
 - onboarding drop-off: sipho says 40% bail on step 3 (the KYC upload). lerato thinks it's the file size limit
