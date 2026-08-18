@@ -511,6 +511,27 @@ function MinutesPage() {
         </section>
 
         <section className="space-y-6">
+          {(speakerNotes || transcribeStep === "parsing") && (
+            <div className="panel p-6">
+              <div className="flex items-center justify-between gap-3">
+                <p className="label-eyebrow">Speaker-by-speaker notes</p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => copy(speakerNotes, "Speaker notes")}
+                >
+                  <Copy /> Copy
+                </Button>
+              </div>
+              <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground">
+                {speakerNotes}
+                {transcribeStep === "parsing" && (
+                  <span className="ml-1 animate-pulse text-primary">▍</span>
+                )}
+              </pre>
+            </div>
+          )}
+
           {actionsTable && (
             <div className="panel p-6">
               <div className="flex items-center justify-between gap-3">
