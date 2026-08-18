@@ -50,9 +50,9 @@ export const Route = createFileRoute("/")({
 function Studio() {
   const [kind, setKind] = useState<ContentKind>("blog");
   const templates = useMemo(() => PROMPT_LIBRARY.filter((t) => t.kind === kind), [kind]);
-  const [templateId, setTemplateId] = useState(templates[0].id);
+  const [templateId, setTemplateId] = useState(templates[0]!.id);
   const template = useMemo(
-    () => templates.find((t) => t.id === templateId) ?? templates[0],
+    () => templates.find((t) => t.id === templateId) ?? templates[0]!,
     [templates, templateId],
   );
 
@@ -68,7 +68,7 @@ function Studio() {
 
   function switchKind(next: ContentKind) {
     setKind(next);
-    setTemplateId(PROMPT_LIBRARY.filter((t) => t.kind === next)[0].id);
+    setTemplateId(PROMPT_LIBRARY.filter((t) => t.kind === next)[0]!.id);
   }
 
   async function generate() {
