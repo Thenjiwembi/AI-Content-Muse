@@ -79,7 +79,102 @@ function MinutesPage() {
   const [busy, setBusy] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
+  // ---- transcript parser ----
+  const [rawTranscript, setRawTranscript] = useState("");
+  const [speakerNotes, setSpeakerNotes] = useState("");
+  const [transcribeStep, setTranscribeStep] = useState<"idle" | "transcribing" | "parsing">("idle");
+  const [recording, setRecording] = useState(false);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+
   const baseVars = { notes, title, type, date, attendees, detail };
+
+  async function parseSpeakers(transcript: string) {
+    setTranscribeStep("parsing");
+    setSpeakerNotes("");
+    const prompt = fillMinutesPrompt(SPEAKER_NOTES_PROMPT, {
+      ...baseVars,
+      notes: transcript,
+    });
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt,
+        system:
+          "You are a transcript parser. Segment speech by speaker turns. Never invent content that is not in the transcript. Return only clean markdown.",
+      }),
+    });
+    if (!res.ok || !res.body) {
+      const data = await res.json().catch(() => ({}) as { error?: string });
+      throw new Error(data.error ?? "Could not parse speakers.");
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      text += chunk;
+      setSpeakerNotes((s) => s + chunk);
+    }
+    return text;
+  }
+
+  async function handleAudio(file: File) {
+    setTranscribeStep("transcribing");
+    setRawTranscript("");
+    setSpeakerNotes("");
+    try {
+      const form = new FormData();
+      form.append("audio", file, file.name || "recording.webm");
+      const res = await fetch("/api/transcribe", { method: "POST", body: form });
+      const data = (await res.json().catch(() => ({}))) as { text?: string; error?: string };
+      if (!res.ok || !data.text) throw new Error(data.error ?? "Transcription failed.");
+      setRawTranscript(data.text);
+
+      const parsed = await parseSpeakers(data.text);
+      setNotes(parsed);
+      toast.success("Transcript parsed into speaker notes");
+    } catch (err) {
+      toast.error((err as Error).message || "Could not read that recording.");
+    } finally {
+      setTranscribeStep("idle");
+    }
+  }
+
+  async function toggleRecording() {
+    if (recording) {
+      recorderRef.current?.stop();
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        setRecording(false);
+        const type = recorder.mimeType.split(";")[0] || "audio/webm";
+        const blob = new Blob(chunks, { type });
+        if (blob.size < 2048) {
+          toast.error("That recording was empty — please try again.");
+          return;
+        }
+        void handleAudio(new File([blob], "recording.webm", { type }));
+      };
+      recorderRef.current = recorder;
+      recorder.start();
+      setRecording(true);
+    } catch {
+      toast.error("Microphone access is needed to record the meeting.");
+    }
+  }
+
 
   async function runStage(
     stageIndex: number,
