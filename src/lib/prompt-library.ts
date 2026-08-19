@@ -188,3 +188,26 @@ export function buildPrompt(opts: {
     .replaceAll("{{tone}}", opts.tone)
     .replaceAll("{{length}}", opts.length);
 }
+
+export const CODE_LANGUAGES = [
+  "TypeScript",
+  "JavaScript",
+  "Python",
+  "Java",
+  "C#",
+  "C++",
+  "Go",
+  "Rust",
+  "PHP",
+  "Ruby",
+  "Swift",
+  "Kotlin",
+  "SQL",
+  "Bash",
+  "HTML/CSS",
+] as const;
+
+export function withLanguage(prompt: string, kind: ContentKind, language: string) {
+  if (kind !== "code") return prompt;
+  return `${prompt}\n\nProgramming language: ${language}. Write all code in ${language} using its idiomatic style, conventions and standard tooling. Use fenced code blocks labelled with the correct language.`;
+}
