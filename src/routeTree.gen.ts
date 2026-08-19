@@ -10,14 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MinutesRouteImport } from './routes/minutes'
 import { Route as PromptsRouteImport } from './routes/prompts'
+import { Route as StudioRouteImport } from './routes/studio'
 import { Route as ApiGenerateRouteImport } from './routes/api/generate'
+import { Route as ApiImageRouteImport } from './routes/api/image'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinutesRoute = MinutesRouteImport.update({
@@ -30,9 +38,19 @@ const PromptsRoute = PromptsRouteImport.update({
   path: '/prompts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiGenerateRoute = ApiGenerateRouteImport.update({
   id: '/api/generate',
   path: '/api/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiImageRoute = ApiImageRouteImport.update({
+  id: '/api/image',
+  path: '/api/image',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
@@ -43,45 +61,76 @@ const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
+  '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
+  '/api/image': typeof ApiImageRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
+  '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
+  '/api/image': typeof ApiImageRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
+  '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
+  '/api/image': typeof ApiImageRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/minutes' | '/prompts' | '/api/generate' | '/api/transcribe'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/minutes'
+    | '/prompts'
+    | '/studio'
+    | '/api/generate'
+    | '/api/image'
+    | '/api/transcribe'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/minutes' | '/prompts' | '/api/generate' | '/api/transcribe'
+  to:
+    | '/'
+    | '/auth'
+    | '/minutes'
+    | '/prompts'
+    | '/studio'
+    | '/api/generate'
+    | '/api/image'
+    | '/api/transcribe'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/minutes'
     | '/prompts'
+    | '/studio'
     | '/api/generate'
+    | '/api/image'
     | '/api/transcribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   MinutesRoute: typeof MinutesRoute
   PromptsRoute: typeof PromptsRoute
+  StudioRoute: typeof StudioRoute
   ApiGenerateRoute: typeof ApiGenerateRoute
+  ApiImageRoute: typeof ApiImageRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
 }
 
@@ -92,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/minutes': {
@@ -108,11 +164,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PromptsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/generate': {
       id: '/api/generate'
       path: '/api/generate'
       fullPath: '/api/generate'
       preLoaderRoute: typeof ApiGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/image': {
+      id: '/api/image'
+      path: '/api/image'
+      fullPath: '/api/image'
+      preLoaderRoute: typeof ApiImageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/transcribe': {
@@ -127,9 +197,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   MinutesRoute: MinutesRoute,
   PromptsRoute: PromptsRoute,
+  StudioRoute: StudioRoute,
   ApiGenerateRoute: ApiGenerateRoute,
+  ApiImageRoute: ApiImageRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
 }
 export const routeTree = rootRouteImport
