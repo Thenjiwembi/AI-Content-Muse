@@ -45,7 +45,7 @@ export async function saveGeneration(input: {
       output: input.output ?? null,
       language: input.language ?? null,
       image_path: input.imagePath ?? null,
-      metadata: input.metadata ?? {},
+      metadata: (input.metadata ?? {}) as never,
     })
     .select()
     .single();
