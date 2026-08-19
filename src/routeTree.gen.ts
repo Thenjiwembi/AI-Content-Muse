@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MinutesRouteImport } from './routes/minutes'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ApiGenerateRouteImport } from './routes/api/generate'
+import { Route as ApiImageRouteImport } from './routes/api/image'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const ApiGenerateRoute = ApiGenerateRouteImport.update({
   path: '/api/generate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiImageRoute = ApiImageRouteImport.update({
+  id: '/api/image',
+  path: '/api/image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
   id: '/api/transcribe',
   path: '/api/transcribe',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
   '/api/generate': typeof ApiGenerateRoute
+  '/api/image': typeof ApiImageRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
   '/api/generate': typeof ApiGenerateRoute
+  '/api/image': typeof ApiImageRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,33 @@ export interface FileRoutesById {
   '/minutes': typeof MinutesRoute
   '/prompts': typeof PromptsRoute
   '/api/generate': typeof ApiGenerateRoute
+  '/api/image': typeof ApiImageRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/minutes' | '/prompts' | '/api/generate' | '/api/transcribe'
+  fullPaths:
+    | '/'
+    | '/minutes'
+    | '/prompts'
+    | '/api/generate'
+    | '/api/image'
+    | '/api/transcribe'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/minutes' | '/prompts' | '/api/generate' | '/api/transcribe'
+  to:
+    | '/'
+    | '/minutes'
+    | '/prompts'
+    | '/api/generate'
+    | '/api/image'
+    | '/api/transcribe'
   id:
     | '__root__'
     | '/'
     | '/minutes'
     | '/prompts'
     | '/api/generate'
+    | '/api/image'
     | '/api/transcribe'
   fileRoutesById: FileRoutesById
 }
@@ -82,6 +104,7 @@ export interface RootRouteChildren {
   MinutesRoute: typeof MinutesRoute
   PromptsRoute: typeof PromptsRoute
   ApiGenerateRoute: typeof ApiGenerateRoute
+  ApiImageRoute: typeof ApiImageRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
 }
 
@@ -115,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/image': {
+      id: '/api/image'
+      path: '/api/image'
+      fullPath: '/api/image'
+      preLoaderRoute: typeof ApiImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/transcribe': {
       id: '/api/transcribe'
       path: '/api/transcribe'
@@ -130,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   MinutesRoute: MinutesRoute,
   PromptsRoute: PromptsRoute,
   ApiGenerateRoute: ApiGenerateRoute,
+  ApiImageRoute: ApiImageRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
 }
 export const routeTree = rootRouteImport
