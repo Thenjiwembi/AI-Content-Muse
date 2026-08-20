@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ImagesRouteImport } from './routes/images'
 import { Route as MinutesRouteImport } from './routes/minutes'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as ApiGenerateRouteImport } from './routes/api/generate'
@@ -23,14 +26,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImagesRoute = ImagesRouteImport.update({
+  id: '/images',
+  path: '/images',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MinutesRoute = MinutesRouteImport.update({
   id: '/minutes',
   path: '/minutes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromptsRoute = PromptsRouteImport.update({
@@ -61,8 +79,11 @@ const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/images': typeof ImagesRoute
   '/minutes': typeof MinutesRoute
+  '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
@@ -71,8 +92,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/images': typeof ImagesRoute
   '/minutes': typeof MinutesRoute
+  '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
@@ -82,8 +106,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/images': typeof ImagesRoute
   '/minutes': typeof MinutesRoute
+  '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
@@ -94,8 +121,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/archive'
     | '/auth'
+    | '/images'
     | '/minutes'
+    | '/profile'
     | '/prompts'
     | '/studio'
     | '/api/generate'
@@ -104,8 +134,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/archive'
     | '/auth'
+    | '/images'
     | '/minutes'
+    | '/profile'
     | '/prompts'
     | '/studio'
     | '/api/generate'
@@ -114,8 +147,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/archive'
     | '/auth'
+    | '/images'
     | '/minutes'
+    | '/profile'
     | '/prompts'
     | '/studio'
     | '/api/generate'
@@ -125,8 +161,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
+  ImagesRoute: typeof ImagesRoute
   MinutesRoute: typeof MinutesRoute
+  ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
   StudioRoute: typeof StudioRoute
   ApiGenerateRoute: typeof ApiGenerateRoute
@@ -143,6 +182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -150,11 +196,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/images': {
+      id: '/images'
+      path: '/images'
+      fullPath: '/images'
+      preLoaderRoute: typeof ImagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/minutes': {
       id: '/minutes'
       path: '/minutes'
       fullPath: '/minutes'
       preLoaderRoute: typeof MinutesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prompts': {
@@ -197,8 +257,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
+  ImagesRoute: ImagesRoute,
   MinutesRoute: MinutesRoute,
+  ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
   StudioRoute: StudioRoute,
   ApiGenerateRoute: ApiGenerateRoute,
