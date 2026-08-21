@@ -94,3 +94,24 @@ export async function uploadGeneratedImage(base64: string, mime = "image/png") {
   if (error) throw error;
   return path;
 }
+
+export async function setSavedFlag(row: GenerationRow, saved: boolean) {
+  const metadata = { ...(row.metadata ?? {}), saved };
+  const { error } = await supabase
+    .from("generations")
+    .update({ metadata: metadata as never })
+    .eq("id", row.id);
+  if (error) throw error;
+  return metadata;
+}
+
+export function isSaved(row: GenerationRow) {
+  return Boolean((row.metadata as { saved?: boolean } | null)?.saved);
+}
+
+export function contentGroup(kind: string): "text" | "images" | "code" | "other" {
+  if (kind === "image") return "images";
+  if (kind === "code") return "code";
+  if (kind === "blog" || kind === "email" || kind === "minutes") return "text";
+  return "other";
+}

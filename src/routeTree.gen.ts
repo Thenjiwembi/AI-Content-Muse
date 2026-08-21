@@ -12,10 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as ImagesRouteImport } from './routes/images'
 import { Route as MinutesRouteImport } from './routes/minutes'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PromptsRouteImport } from './routes/prompts'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as ApiGenerateRouteImport } from './routes/api/generate'
 import { Route as ApiImageRouteImport } from './routes/api/image'
@@ -36,6 +39,16 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImagesRoute = ImagesRouteImport.update({
   id: '/images',
   path: '/images',
@@ -54,6 +67,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const PromptsRoute = PromptsRouteImport.update({
   id: '/prompts',
   path: '/prompts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioRoute = StudioRouteImport.update({
@@ -81,10 +99,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/help': typeof HelpRoute
   '/images': typeof ImagesRoute
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
   '/api/image': typeof ApiImageRoute
@@ -94,10 +115,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/help': typeof HelpRoute
   '/images': typeof ImagesRoute
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
   '/api/image': typeof ApiImageRoute
@@ -108,10 +132,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/dashboard': typeof DashboardRoute
+  '/help': typeof HelpRoute
   '/images': typeof ImagesRoute
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
   '/api/image': typeof ApiImageRoute
@@ -123,10 +150,13 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/auth'
+    | '/dashboard'
+    | '/help'
     | '/images'
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/settings'
     | '/studio'
     | '/api/generate'
     | '/api/image'
@@ -136,10 +166,13 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/auth'
+    | '/dashboard'
+    | '/help'
     | '/images'
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/settings'
     | '/studio'
     | '/api/generate'
     | '/api/image'
@@ -149,10 +182,13 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/auth'
+    | '/dashboard'
+    | '/help'
     | '/images'
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/settings'
     | '/studio'
     | '/api/generate'
     | '/api/image'
@@ -163,10 +199,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
+  DashboardRoute: typeof DashboardRoute
+  HelpRoute: typeof HelpRoute
   ImagesRoute: typeof ImagesRoute
   MinutesRoute: typeof MinutesRoute
   ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
+  SettingsRoute: typeof SettingsRoute
   StudioRoute: typeof StudioRoute
   ApiGenerateRoute: typeof ApiGenerateRoute
   ApiImageRoute: typeof ApiImageRoute
@@ -196,6 +235,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/images': {
       id: '/images'
       path: '/images'
@@ -222,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/prompts'
       fullPath: '/prompts'
       preLoaderRoute: typeof PromptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio': {
@@ -259,10 +319,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
+  DashboardRoute: DashboardRoute,
+  HelpRoute: HelpRoute,
   ImagesRoute: ImagesRoute,
   MinutesRoute: MinutesRoute,
   ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
+  SettingsRoute: SettingsRoute,
   StudioRoute: StudioRoute,
   ApiGenerateRoute: ApiGenerateRoute,
   ApiImageRoute: ApiImageRoute,
