@@ -18,6 +18,7 @@ import { Route as ImagesRouteImport } from './routes/images'
 import { Route as MinutesRouteImport } from './routes/minutes'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PromptsRouteImport } from './routes/prompts'
+import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as ApiGenerateRouteImport } from './routes/api/generate'
@@ -69,6 +70,11 @@ const PromptsRoute = PromptsRouteImport.update({
   path: '/prompts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
   '/api/generate': typeof ApiGenerateRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/saved'
     | '/settings'
     | '/studio'
     | '/api/generate'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/saved'
     | '/settings'
     | '/studio'
     | '/api/generate'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/saved'
     | '/settings'
     | '/studio'
     | '/api/generate'
@@ -205,6 +217,7 @@ export interface RootRouteChildren {
   MinutesRoute: typeof MinutesRoute
   ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
+  SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
   StudioRoute: typeof StudioRoute
   ApiGenerateRoute: typeof ApiGenerateRoute
@@ -277,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PromptsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -325,6 +345,7 @@ const rootRouteChildren: RootRouteChildren = {
   MinutesRoute: MinutesRoute,
   ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
+  SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
   StudioRoute: StudioRoute,
   ApiGenerateRoute: ApiGenerateRoute,
