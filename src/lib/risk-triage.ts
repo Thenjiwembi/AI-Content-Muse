@@ -52,7 +52,7 @@ const KEYWORDS = [
   "escrow",
 ];
 
-export const SAMPLE_TXNS: Record<string, TxnInput> = {
+export const SAMPLE_TXNS: { benign: TxnInput; borderline: TxnInput; suspicious: TxnInput } = {
   benign: {
     amount: 74.2,
     currency: "USD",
