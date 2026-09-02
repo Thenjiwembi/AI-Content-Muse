@@ -58,7 +58,7 @@ const TIER_STYLES = {
 
 function RiskPage() {
   const { user } = useAuth();
-  const [txn, setTxn] = useState<TxnInput>(SAMPLE_TXNS.borderline!);
+  const [txn, setTxn] = useState<TxnInput>(SAMPLE_TXNS.borderline);
   const [narrative, setNarrative] = useState("");
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -152,7 +152,7 @@ function RiskPage() {
                   ["suspicious", "High-risk sample"],
                 ] as const
               ).map(([key, label]) => (
-                <Button key={key} variant="outline" size="sm" onClick={() => setTxn(SAMPLE_TXNS[key]!)}>
+                <Button key={key} variant="outline" size="sm" onClick={() => setTxn(SAMPLE_TXNS[key])}>
                   {label}
                 </Button>
               ))}

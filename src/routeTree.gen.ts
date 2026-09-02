@@ -18,6 +18,7 @@ import { Route as ImagesRouteImport } from './routes/images'
 import { Route as MinutesRouteImport } from './routes/minutes'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PromptsRouteImport } from './routes/prompts'
+import { Route as RiskRouteImport } from './routes/risk'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StudioRouteImport } from './routes/studio'
@@ -70,6 +71,11 @@ const PromptsRoute = PromptsRouteImport.update({
   path: '/prompts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RiskRoute = RiskRouteImport.update({
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/risk': typeof RiskRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/risk': typeof RiskRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/minutes': typeof MinutesRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/risk': typeof RiskRoute
   '/saved': typeof SavedRoute
   '/settings': typeof SettingsRoute
   '/studio': typeof StudioRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/risk'
     | '/saved'
     | '/settings'
     | '/studio'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/risk'
     | '/saved'
     | '/settings'
     | '/studio'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/minutes'
     | '/profile'
     | '/prompts'
+    | '/risk'
     | '/saved'
     | '/settings'
     | '/studio'
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   MinutesRoute: typeof MinutesRoute
   ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
+  RiskRoute: typeof RiskRoute
   SavedRoute: typeof SavedRoute
   SettingsRoute: typeof SettingsRoute
   StudioRoute: typeof StudioRoute
@@ -290,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PromptsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/risk': {
+      id: '/risk'
+      path: '/risk'
+      fullPath: '/risk'
+      preLoaderRoute: typeof RiskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/saved': {
       id: '/saved'
       path: '/saved'
@@ -345,6 +365,7 @@ const rootRouteChildren: RootRouteChildren = {
   MinutesRoute: MinutesRoute,
   ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
+  RiskRoute: RiskRoute,
   SavedRoute: SavedRoute,
   SettingsRoute: SettingsRoute,
   StudioRoute: StudioRoute,

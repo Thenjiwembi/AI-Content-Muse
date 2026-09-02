@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type GenerationKind = "blog" | "email" | "code" | "image" | "minutes";
+export type GenerationKind = "blog" | "email" | "code" | "image" | "minutes" | "risk";
 
 export const GENERATION_LABELS: Record<GenerationKind, string> = {
   blog: "Blog",
@@ -8,6 +8,7 @@ export const GENERATION_LABELS: Record<GenerationKind, string> = {
   code: "Code",
   image: "Image",
   minutes: "Minutes",
+  risk: "Risk triage",
 };
 
 export type GenerationRow = {
